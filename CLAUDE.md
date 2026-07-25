@@ -11,6 +11,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Build system:** setuptools via pyproject.toml (library + CLI in one package)
 - **Test framework:** pytest
 - **Linter:** ruff (line-length 120, target py311)
+- **Repository:** https://github.com/super-rick/skillcast
+- **PyPI:** https://pypi.org/project/skillcast/ (published v0.1.0)
+- **CI:** GitHub Actions — test on 3.11, 3.12, 3.13 (push + PR)
+- **SSH:** `~/.ssh/skillcast_github` (Host `github.com-skillcast` in ~/.ssh/config)
+
+## Current Status (v0.1.0)
+
+- **30 tests passing** (5 IR, 9 parser, 9 generator, 5 CLI, 1 version + 1 package)
+- **4 input formats:** generic YAML/JSON, Claude SKILL.md, Hermes SKILL.md, Cursor .cursorrules
+- **4 output formats:** Claude, Hermes, Cursor, Codex CLI
+- **CLI:** `skillcast convert`, `skillcast list`, `skillcast init`
+- **Library:** `from skillcast import parse_skill, generate, generate_all`
+- **Zero-install:** `uvx skillcast --help` works
+- **`skillcast.__version__`** exported via `importlib.metadata`
 
 ## Architecture
 
@@ -49,7 +63,7 @@ class SkillIR:
     metadata: dict[str, Any] = field(default_factory=dict)
 ```
 
-### Supported platforms (initial)
+### Supported platforms
 
 | Platform | Input Format | Output Format |
 |----------|-------------|---------------|
@@ -66,9 +80,6 @@ class SkillIR:
 pip install -e ".[dev]"
 
 # Run all tests
-pytest
-
-# Run tests verbose
 pytest -v
 
 # Run a single test file
@@ -92,21 +103,73 @@ skillcast convert my-skill.yaml --to claude # convert to single platform
 ```
 skillcast/
 ├── src/skillcast/
-│   ├── __init__.py          # public API
-│   ├── cli.py               # argparse CLI
-│   ├── ir.py                # SkillIR + validate_ir
-│   ├── parser/              # parsers: generic, claude, hermes, cursor
-│   └── generator/           # generators: claude, hermes, cursor, codex
+│   ├── __init__.py              # public API + __version__
+│   ├── cli.py                   # argparse CLI (convert, list, init)
+│   ├── ir.py                    # SkillIR + validate_ir
+│   ├── parser/                  # parsers: generic, claude, hermes, cursor
+│   └── generator/               # generators: claude, hermes, cursor, codex
 ├── tests/
-│   ├── fixtures/            # sample skill files per format
-│   └── test_*.py
-├── pyproject.toml
-└── README.md
+│   ├── fixtures/                # sample skill files per format
+│   └── test_*.py                # 30 tests total
+├── demo/
+│   ├── demo.sh                  # live terminal demo script
+│   ├── terminalizer.yml         # config for GIF recording
+│   ├── skillcast.tape           # vhs tape for GIF recording
+│   └── launch-post.md           # draft posts for HN, Reddit, X
+├── .github/workflows/test.yml   # CI: pytest on 3.11/3.12/3.13
+├── pyproject.toml               # single config: build + CLI + pytest + ruff
+├── LICENSE                      # MIT
+├── README.md
+└── plan/2026-07-25_skillcast-oss-plan.md
 ```
 
-## Implementation plan
+## Roadmap
 
-The full task-by-task implementation plan is in `plan/2026-07-25_skillcast-oss-plan.md`. Development follows TDD: write the test first (RED), implement (GREEN), then commit. Each phase commits independently.
+```
+v0.1 ✅ CLI + 库 (done)
+  ├── Published to PyPI: pip install skillcast
+  ├── 30 tests, 4 input × 4 output formats
+  ├── CI: GitHub Actions
+  └── zero-install: uvx skillcast
+
+v0.2 Web converter (skillcast.dev)
+  └── Browser-based: paste YAML → download platform files
+       (might replace with a simple Streamlit/Gradio app first)
+
+v0.3 Community Skill index
+  └── Searchable catalog of community-contributed Skills
+
+v1.0 MCP Skill Registry integration
+  └── Connect to the emerging MCP Skill Registry ecosystem
+```
+
+## Launch Plan
+
+Target channels and hooks:
+
+| Channel | Hook | Post |
+|---------|------|------|
+| **r/ClaudeAI** | "Convert Claude Skills ↔ Cursor rules" | `demo/launch-post.md` |
+| **r/CursorAI** | "Export .cursorrules to Claude/Hermes format" | `demo/launch-post.md` |
+| **HN Show HN** | Tech angle: Parser→IR→Generator, 1 dep, Python | `demo/launch-post.md` |
+| **X/Twitter** | One-liner + demo code block | `demo/launch-post.md` |
+
+## Demo GIF
+
+Recording tools were installing too slowly. To generate a GIF later:
+
+```bash
+# Option A: vhs (charmbracelet)
+brew install vhs
+vhs demo/skillcast.tape    # → demo/skillcast-demo.gif
+
+# Option B: terminalizer
+npm install -g terminalizer
+terminalizer record demo/skillcast -c demo/terminalizer.yml
+terminalizer render demo/skillcast
+```
+
+Once GIF is generated, add to README: `![demo](demo/skillcast-demo.gif)`
 
 ## Design decisions
 
@@ -114,8 +177,4 @@ The full task-by-task implementation plan is in `plan/2026-07-25_skillcast-oss-p
 - **Parser/Generator per platform** — each platform format is isolated; a format change in one platform never breaks another
 - **Generic YAML as the canonical authoring format** — platform-agnostic, human-readable, easy to template with `skillcast init`
 - **Library + CLI in one package** — `pip install skillcast` gives both `skillcast convert` and `from skillcast import parse_skill, generate`
-
-## Repository
-
-- GitHub: `github.com/super-rick/skillcast`
-- License: MIT
+- **TDD workflow** — write test first (RED), implement (GREEN), commit. Each commit is self-contained.
