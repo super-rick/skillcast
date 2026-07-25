@@ -10,6 +10,8 @@
 
 ```bash
 pip install skillcast
+# or zero-install:
+uvx skillcast --help
 ```
 
 ## Quick Start
