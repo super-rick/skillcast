@@ -1,5 +1,16 @@
+import skillcast
 import pytest
 from skillcast.ir import SkillIR, validate_ir, SkillIRValidationError
+
+
+class TestPackage:
+    def test_version_is_set(self):
+        assert skillcast.__version__
+        assert isinstance(skillcast.__version__, str)
+        major, minor, patch = skillcast.__version__.split(".")
+        assert int(major) >= 0
+        assert int(minor) >= 0
+        assert int(patch) >= 0
 
 
 class TestValidateIR:
