@@ -8,14 +8,14 @@ version = "0.1.0"
 description = "Write Skills once, deliver everywhere. Universal Skill format converter."
 requires-python = ">=3.11"
 dependencies = ["pyyaml"]
-license = {text = "MIT"}
+license = "MIT"
 authors = [{name = "Rick"}]
+license-files = ["LICENSE"]
 keywords = ["skill", "claude", "cursor", "hermes", "codex", "agent", "ai", "converter"]
 readme = "README.md"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
