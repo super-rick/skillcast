@@ -5,6 +5,38 @@
 [![PyPI](https://img.shields.io/pypi/v/skillcast)](https://pypi.org/project/skillcast/)
 [![Python](https://img.shields.io/pypi/pyversions/skillcast)](https://pypi.org/project/skillcast/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/super-rick/skillcast/actions/workflows/test.yml/badge.svg)](https://github.com/super-rick/skillcast/actions/workflows/test.yml)
+
+## Quick Demo
+
+```console
+$ pip install skillcast
+
+$ skillcast list
+📥 Input formats:
+  - generic   - claude   - hermes   - cursor
+📤 Output formats:
+  - claude    - hermes   - cursor   - codex
+
+$ skillcast init java-interview
+✅ Created: java-interview.yaml
+
+$ skillcast convert java-interview.yaml --all -o output
+✅ Parsed: java-interview — Helps prepare for Java technical interviews
+  📄 output/java-interview.claude.md
+  📄 output/java-interview.hermes.md
+  📄 output/java-interview.cursor.cursorrules
+  📄 output/java-interview.codex.json
+🎉 Done! Output in: output/
+
+$ ls -1 output/
+java-interview.claude.md
+java-interview.codex.json
+java-interview.cursor.cursorrules
+java-interview.hermes.md
+```
+
+> 💡 Run `bash demo/demo.sh` to see the full workflow live in your terminal.
 
 ## Installation
 
@@ -12,22 +44,6 @@
 pip install skillcast
 # or zero-install:
 uvx skillcast --help
-```
-
-## Quick Start
-
-```bash
-# Create a new Skill template
-skillcast init my-skill
-
-# Edit the generated YAML file with your instructions...
-vim my-skill.yaml
-
-# Convert to all supported platforms
-skillcast convert my-skill.yaml --all
-
-# Or convert to a specific target
-skillcast convert my-skill.yaml --to claude
 ```
 
 ## Supported Platforms
@@ -43,10 +59,10 @@ skillcast convert my-skill.yaml --to claude
 ## CLI Reference
 
 ```
-skillcast list                    List supported input/output formats
-skillcast init <name>             Create a new Skill template
-skillcast convert <file> --all    Convert to all target platforms
-skillcast convert <file> --to <fmt>  Convert to a single platform
+skillcast list                          List supported input/output formats
+skillcast init <name>                   Create a new Skill template
+skillcast convert <file> --all          Convert to all target platforms
+skillcast convert <file> --to <fmt>     Convert to a single platform
 ```
 
 ## Library Usage
